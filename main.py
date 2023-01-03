@@ -1,8 +1,9 @@
 from discord import DMChannel
 from messages import Messages
 from discord.ext import commands, tasks
-from token import TOKEN
 import datetime
+
+TOKEN = ""
 
 bot = commands.Bot(command_prefix='>')
 messages = Messages()
