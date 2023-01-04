@@ -4,13 +4,15 @@ from discord.ext import commands
 from discord import DMChannel
 from messages import Messages
 from discord.ext import commands
+from keep_alive import keep_alive
 
 bot = commands.Bot(command_prefix=">")
 
-# Set up your authorisation token and receiver's user ID here
+# Set up authorisation token and user id here
 TOKEN = ''
 USER_ID = ''
 
+# Set up the message times here
 MORNING = time(8, 0, 0)  # 8:00 AM
 DAY = time(13, 0, 0)  # 1:00 PM
 NIGHT = time(21, 30, 0)  # 9:00 PM
@@ -85,5 +87,7 @@ async def background_task():
 
 
 if __name__ == "__main__":
+    # Ping for web server
+    # keep_alive()
     bot.loop.create_task(background_task())
     bot.run(TOKEN)
