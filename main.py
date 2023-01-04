@@ -12,6 +12,9 @@ bot = commands.Bot(command_prefix=">")
 TOKEN = ''
 USER_ID = ''
 
+# Set up timezone here; use -timedelta() for -UTC(s)
+UTC = +timedelta(hours=13)
+
 # Set up the message times here
 MORNING = time(8, 0, 0)  # 8:00 AM
 DAY = time(13, 0, 0)  # 1:00 PM
@@ -44,14 +47,14 @@ async def wait_until(time):
       Args:
           time (datetime.datetime): Time to sleep to.
       """
-    now = datetime.utcnow() + timedelta(hours=13)
+    now = datetime.utcnow() + UTC
     target_time = datetime.combine(now.date(), time)
     seconds_until_target = (target_time - now).total_seconds()
     await asyncio.sleep(seconds_until_target)
 
 
 async def wait_until_tomorrow():
-    now = datetime.utcnow() + timedelta(hours=13)
+    now = datetime.utcnow() + UTC
     tomorrow = datetime.combine(now.date() + timedelta(days=1), time(0))
     # Seconds until tomorrow (midnight)
     seconds = (tomorrow - now).total_seconds()
@@ -60,7 +63,7 @@ async def wait_until_tomorrow():
 
 
 async def background_task():
-    now = datetime.utcnow() + timedelta(hours=13)
+    now = datetime.utcnow() + UTC
     await bot.wait_until_ready()
     print("Bot is ready!")
     # Get the receiver's user class
