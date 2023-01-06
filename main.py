@@ -16,9 +16,9 @@ USER_ID = ''
 UTC = +timedelta(hours=13)
 
 # Set up the message times here
-MORNING = time(8, 0, 0)  # 8:00 AM
-DAY = time(13, 0, 0)  # 1:00 PM
-NIGHT = time(21, 30, 0)  # 9:00 PM
+MORNING = time(8, 13, 0)  # 8:13 AM
+DAY = time(13, 1, 0)  # 1:01 PM
+NIGHT = time(21, 32, 0)  # 9:32 PM
 
 messages = Messages()
 
@@ -68,25 +68,20 @@ async def background_task():
     print("Bot is ready!")
     # Get the receiver's user class
     user = await bot.fetch_user(USER_ID)
-    # Make sure loop doesn't start after MORNING. Otherwise, it will immediately send the
-    # first time as negative seconds which will make the sleep yield instantly
-    if now.time() > MORNING:
-        tomorrow = datetime.combine(now.date() + timedelta(days=1), time(0))
-        # Seconds until tomorrow (midnight)
-        seconds = (tomorrow - now).total_seconds()
-        # Send the day message
-        await send_day(user)
-        # Sleep until tomorrow and then the loop will start
-        await asyncio.sleep(seconds)
-    while True:
-        await wait_until(MORNING)
-        await send_morning(user)
-        await wait_until(DAY)
-        await send_day(user)
-        await wait_until(NIGHT)
-        await send_night(user)
+    await send_day(user)
 
-        wait_until_tomorrow()
+    while True:
+        now = datetime.utcnow() + UTC
+        if now.time() > NIGHT:
+            await wait_until_tomorrow()
+            await wait_until(MORNING)
+            await send_morning(user)
+        elif now.time() > DAY:
+            await wait_until(NIGHT)
+            await send_night(user)
+        else:
+            await wait_until(DAY)
+            await send_day(user)
 
 
 if __name__ == "__main__":
